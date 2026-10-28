@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#aa502e">
+    <meta name="description"
+        content="Browser-based bakery sales tracking, statistical demand forecasting and production planning.">
+    <title>Smart Bakery Demand Predictor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <aside>
+        <a class="brand" href="#dashboard"><span class="logo">♨</span>
+            <span>BakeWise<small>SMART BAKERY DEMAND PREDICTOR</small></span></a>
+        <div class="nav-label">YOUR WORKSPACE</div>
+        <nav aria-label="Main navigation">
+            <a href="#dashboard">◫ <span>Dashboard</span></a><a href="#products">▦ <span>Products</span></a>
+            <a href="#records">▤ <span>Daily records</span></a><a href="#forecast">↗ <span>Demand forecast</span>
+            </a><a href="#planner">◷ <span>Production planner</span></a><a href="#reports">▥ <span>Reports &
+                    data</span></a>
+        </nav>
+        <div class="sidebar-note"><span>BAKE WITH A PLAN</span>
+            <p>A little less guesswork.<br>A little more goodness.</p>
+            <small>Your data stays in this browser.</small>
+        </div>
+    </aside>
+    <main>
+        <header>
+            <div class="breadcrumb">WORKSPACE <span>/</span> <b id="page-name">Dashboard</b></div><span
+                class="local-badge">● Browser storage</span>
+        </header>
+        <div id="storage-warning" role="alert" hidden></div>
+        <div class="page-heading">
+            <div>
+                <div class="eyebrow">FRESH THINKING, EVERY MORNING</div>
+                <h1 id="title">Your bakery, at a glance.</h1>
+                <p id="subtitle">Turn yesterday’s sales into a better plan for tomorrow.</p>
+            </div><button class="primary" id="quick-record">＋ Add daily record</button>
+        </div>
+        <div id="notice" role="status"></div>
+        <div class="demo-banner"><span><b id="data-label">Your workspace is ready</b> <span id="data-description">Start
+                    with a product, or explore with synthetic sample data.</span></span><button id="load-demo"
+                class="text-button">Load demo data ↗</button></div>
+        <section id="dashboard" class="view">
+            <div class="section-bar">
+                <h2>Performance overview</h2>
+                <div class="date-range"><label>From <input type="date" id="range-start"></label><label>To <input
+                            type="date" id="range-end"></label></div>
+            </div>
+            <div id="metrics" class="metrics"></div>
+            <div class="dashboard-grid">
+                <article class="card">
+                    <div class="card-heading">
+                        <div>
+                            <h2>Sales at a glance</h2>
+                            <p>Prepared and sold, day by day</p>
+                        </div><span class="tag">Selected period</span>
+                    </div>
+                    <div id="sales-chart" class="chart"></div>
+                </article>
+                <article class="card tomorrow"><span class="eyebrow">A HEAD START ON TOMORROW</span>
+                    <div class="bread-art" aria-hidden="true">🥐</div>
+                    <h2>Good mornings<br>start with a good plan.</h2>
+                    <p>Use recent sales to make your next bake a little more informed.</p><button class="primary"
+                        id="view-plan">Plan the next bake →</button><small>Statistical forecasts. Practical
+                        decisions.</small>
+                </article>
+            </div>
+            <article class="card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Product performance</h2>
+                        <p>See what’s selling and what’s staying on the shelf.</p>
+                    </div><a href="#reports">View reports ↗</a>
+                </div>
+                <div id="product-performance" class="table-wrap"></div>
+            </article>
+        </section>
+        <section id="products" class="view" hidden>
+            <div class="two-col">
+                <article class="card">
+                    <h2 id="product-form-title">Add a product</h2>
+                    <form id="product-form"><input type="hidden" name="id"><label>Product name<input name="name"
+                                required maxlength="80" placeholder="e.g. Butter croissant"></label><label>Selling price
+                            (₹)<input name="price" type="number" min="0" max="1000000" step="0.01"
+                                required></label><label>Production cost per item (₹)<input name="cost" type="number"
+                                min="0" max="1000000" step="0.01" required></label><label>Batch size<input name="batch"
+                                type="number" min="1" max="1000000" step="1" value="1" required></label><button
+                            class="primary">Save product</button><button type="button" id="cancel-product">Clear
+                            form</button></form>
+                </article>
+                <article class="card">
+                    <h2>Your product collection</h2>
+                    <div id="product-list" class="table-wrap"></div>
+                </article>
+            </div>
+        </section>
+        <section id="records" class="view" hidden>
+            <div class="two-col">
+                <article class="card">
+                    <h2 id="record-form-title">Record a day’s baking</h2>
+                    <form id="record-form"><input type="hidden" name="id"><label>Date<input type="date" name="date"
+                                required></label><label>Product<select name="product" required></select></label>
+                        <div class="form-row"><label>Prepared<input name="prepared" type="number" min="0" max="1000000"
+                                    step="1" required></label><label>Sold<input name="sold" type="number" min="0"
+                                    max="1000000" step="1" required></label></div><output
+                            id="leftover-preview">Leftovers: 0</output><label>Weather<select name="weather">
+                                <option>Clear</option>
+                                <option>Rainy</option>
+                                <option>Hot</option>
+                                <option>Cold</option>
+                            </select></label><label class="check"><input name="holiday" type="checkbox"> Public
+                            holiday</label><label>Local event<input name="event" maxlength="150"
+                                placeholder="Optional event name"></label><button class="primary">Save daily
+                            record</button><button type="button" id="cancel-record">Clear form</button>
+                    </form>
+                    <p class="muted">One record per product per date. Edit a record to correct it. A sell-out may mean
+                        demand was higher than recorded sales.</p>
+                </article>
+                <article class="card">
+                    <h2>Daily records</h2>
+                    <div id="record-list" class="table-wrap"></div>
+                </article>
+            </div>
+        </section>
+        <section id="forecast" class="view" hidden>
+            <article class="card">
+                <h2>Plan for the day ahead</h2>
+                <form id="forecast-form" class="forecast-controls"><label>Forecast date<input name="date" type="date"
+                            required></label><label>Weather<select name="weather">
+                            <option>Clear</option>
+                            <option>Rainy</option>
+                            <option>Hot</option>
+                            <option>Cold</option>
+                        </select></label><label>Weather adjustment (%)<input name="weatherAdjustment" type="number"
+                            min="-90" max="200" value="0" required></label><label class="check"><input name="holiday"
+                            type="checkbox"> Holiday</label><label>Holiday uplift (%)<input name="holidayAdjustment"
+                            type="number" min="-90" max="200" value="10" required></label><label>Local event<input
+                            name="event" maxlength="150" placeholder="Optional"></label><label>Event uplift (%)<input
+                            name="eventAdjustment" type="number" min="-90" max="200" value="10" required></label><button
+                        class="primary">Calculate & save forecast</button></form>
+            </article>
+            <article class="card">
+                <h2>Demand forecast</h2>
+                <div id="forecast-results" class="table-wrap"></div>
+            </article>
+            <details class="card" open>
+                <summary>How the statistical forecast works</summary>
+                <p>For each product, use up to 28 records strictly before the forecast date. The latest 7 sales receive
+                    increasing weights (1 through 7). Combine 65% of this weighted moving average with 35% of the
+                    average sales on the matching weekday. Without matching weekdays, use the weighted average alone.
+                    With fewer than 3 records, show a low-data estimate; without records, request a manual plan.</p>
+                <p>Weather, holiday and event percentages are configurable assumptions, not effects learned from
+                    history. Their percentages are added together, with a minimum total multiplier of 0.1. Weather
+                    labels alone do not change demand. Sell-outs are flagged because recorded sales may understate
+                    demand. These estimates cannot guarantee accuracy or waste reduction. Saved forecasts retain their
+                    original values for later comparison; recalculation replaces the same date’s forecast.</p>
+            </details>
+        </section>
+        <section id="planner" class="view" hidden>
+            <article class="card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Your next bake</h2>
+                        <p id="plan-date"></p>
+                    </div><label>Safety buffer (%)<input id="buffer" type="number" min="0" max="100" value="10"></label>
+                </div>
+                <p class="muted">Enter only leftovers you have checked are safe and suitable to sell on the planned
+                    date. Inventory is never carried forward automatically. Recommendations round up to a full batch;
+                    overrides may use any whole quantity.</p>
+                <form id="planner-form">
+                    <div id="planner-table" class="table-wrap"></div><button class="primary">Save production
+                        plan</button>
+                </form>
+            </article>
+        </section>
+        <section id="reports" class="view" hidden>
+            <div class="two-col">
+                <article class="card">
+                    <h2>Leftovers by product</h2>
+                    <p class="muted">Uses the dashboard date range.</p>
+                    <div id="waste-chart" class="chart"></div>
+                </article>
+                <article class="card">
+                    <h2>Forecast vs actual</h2>
+                    <p class="muted">Saved forecasts with recorded actual sales in the selected range.</p>
+                    <div id="accuracy-table" class="table-wrap"></div>
+                </article>
+            </div>
+            <article class="card">
+                <h2>Your data, in your hands</h2>
+                <p>Records are saved only in localStorage in this browser and device. Clearing browser data removes
+                    them. Export CSV regularly for backup. Sales CSV includes product details; full JSON backup also
+                    preserves forecasts and plans.</p>
+                <div class="actions"><button id="export-csv">↓ Export sales CSV</button><button id="sample-csv">↓ Sample
+                        CSV template</button><label class="file-button">↑ Import sales CSV<input id="import-csv"
+                            type="file" accept=".csv,text/csv"></label><button id="backup">↓ Full JSON
+                        backup</button><label class="file-button">↑ Restore JSON backup<input id="restore" type="file"
+                            accept=".json,application/json"></label><button id="reset" class="danger">Reset all
+                        data</button></div>
+                <p class="muted">CSV imports validate the entire file before saving. Duplicate product/date rows update
+                    existing records. Unknown products are created from CSV price, cost and batch fields. Exported rows
+                    retain the price and cost at the time of entry.</p>
+            </article>
+        </section>
+        <footer>Made for thoughtful baking. <span>Local-first · No account needed · Statistical forecasting</span>
+        </footer>
+    </main>
+</body>
+
+</html>
